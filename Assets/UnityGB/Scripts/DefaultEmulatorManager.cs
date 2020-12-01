@@ -12,6 +12,8 @@ public class DefaultEmulatorManager : UnityBot
 {
 	public string Filename;
 	public Renderer ScreenRenderer;
+    [SerializeField] private int maximoDeLogsEnChat;
+    private IControlDeLoQueSeMuestraEnChat chatDeControles;
 
 	public EmulatorBase Emulator
 	{
@@ -26,18 +28,8 @@ public class DefaultEmulatorManager : UnityBot
     // Use this for initialization
     void Start()
 	{
+        chatDeControles = new ControladorDelChat(maximoDeLogsEnChat);
         chat.text = "";
-		// Init Keyboard mapping
-		_keyMapping = new Dictionary<KeyCode, EmulatorBase.Button>();
-		_keyMapping.Add(KeyCode.UpArrow, EmulatorBase.Button.Up);
-		_keyMapping.Add(KeyCode.DownArrow, EmulatorBase.Button.Down);
-		_keyMapping.Add(KeyCode.LeftArrow, EmulatorBase.Button.Left);
-		_keyMapping.Add(KeyCode.RightArrow, EmulatorBase.Button.Right);
-		_keyMapping.Add(KeyCode.Z, EmulatorBase.Button.A);
-		_keyMapping.Add(KeyCode.X, EmulatorBase.Button.B);
-		_keyMapping.Add(KeyCode.Space, EmulatorBase.Button.Start);
-		_keyMapping.Add(KeyCode.LeftShift, EmulatorBase.Button.Select);
-
 
 		// Load emulator
 		IVideoOutput drawable = new DefaultVideoOutput();
@@ -112,7 +104,8 @@ public class DefaultEmulatorManager : UnityBot
     public void AgregandoComandoAlChat(Dictionary<string,string> quien, string comando)
     {
         quien.TryGetValue("display-name", out string value);
-        chat.text += comando.ToUpper() + " -> " + value + "\n";
+        chat.text = chatDeControles.AgregarComandoCola(comando, value);
+        
     }
 
     void Update()
